@@ -1,6 +1,6 @@
 import Link from "next/link";
-import Image from "next/image";
 import { ProductVisual } from "./ProductVisual";
+import { ProductPhoto } from "./ProductPhoto";
 import { formatPrice } from "@/lib/utils";
 
 type ProductCardProps = {
@@ -24,11 +24,10 @@ export function ProductCard({ product }: ProductCardProps) {
     >
       <div className="relative aspect-square overflow-hidden">
         {product.image ? (
-          <Image
+          <ProductPhoto
             src={product.image}
             alt={product.name}
-            fill
-            className="object-cover transition duration-500 group-hover:scale-105"
+            className="transition duration-500 group-hover:scale-105"
           />
         ) : (
           <ProductVisual design={product.design} color={product.color} className="h-full w-full" />

@@ -9,6 +9,10 @@ export function projectRoot() {
   return process.cwd();
 }
 
+export function mediaDir(folder: "products" | "uploads") {
+  return path.join(projectRoot(), "public", folder);
+}
+
 export function uploadsDir() {
-  return path.join(projectRoot(), "public", "uploads");
+  return mediaDir("uploads");
 }

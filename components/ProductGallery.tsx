@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 import { ProductVisual } from "./ProductVisual";
+import { ProductPhoto } from "./ProductPhoto";
 
 export function ProductGallery({
   images,
@@ -22,7 +22,7 @@ export function ProductGallery({
     <div>
       <div className="relative aspect-square overflow-hidden border border-ink/10 bg-paper">
         {current ? (
-          <Image src={current} alt={name} fill className="object-cover" />
+          <ProductPhoto src={current} alt={name} />
         ) : (
           <ProductVisual design={design} color={color} className="h-full w-full" />
         )}
@@ -39,7 +39,7 @@ export function ProductGallery({
               }`}
               aria-label={`Show photo ${index + 1}`}
             >
-              <Image src={src} alt="" fill className="object-cover" />
+              <ProductPhoto src={src} alt="" />
             </button>
           ))}
         </div>
