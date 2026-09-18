@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  description String    @default("")
+  products    Product[]
+}
+
+model Product {
+  id          String         @id @default(cuid())
+  name        String
+  slug        String         @unique
+  description String         @default("")
+  details     String         @default("")
+  price       Float?
+  priceUnit   String         @default("Piece")
+  moq         Int?
+  size        String?
+  color       String?
+  material    String         @default("Concrete")
+  design      String?
+  usage       String?
+  shape       String?
+  image       String?
+  featured    Boolean        @default(false)
+  inStock     Boolean        @default(true)
+  categoryId  String
+  category    Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  images      ProductImage[]
+  inquiries   Inquiry[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  url       String
+  sortOrder Int      @default(0)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Inquiry {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String
+  email     String?
+  city      String?
+  message   String
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  status    String   @default("new")
+  createdAt DateTime @default(now())
+}
+
+model Setting {
+  id       String @id @default("site")
+  phone    String @default("")
+  email    String @default("")
+  whatsapp String @default("")
+  address  String @default("Ankleshwar, Bharuch, Gujarat 393002")
+  gst      String @default("24AOXPL2270G1ZQ")
+  owner    String @default("Minaben Pravinbhai Luvani")
+}
+
+model Admin {
+  id       String @id @default(cuid())
+  username String @unique
+  password String
+}

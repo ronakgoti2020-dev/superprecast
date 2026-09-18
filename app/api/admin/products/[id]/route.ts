@@ -1,0 +1,79 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/require-admin";
+import { slugify } from "@/lib/utils";
+import { collectProductImages, replaceProductImages } from "@/lib/product-images";
+
+async function uniqueSlug(base: string, ignoreId: string) {
+  let slug = slugify(base) || "product";
+  let i = 1;
+  while (true) {
+    const existing = await prisma.product.findUnique({ where: { slug } });
+    if (!existing || existing.id === ignoreId) return slug;
+    slug = `${slugify(base)}-${i++}`;
+  }
+}
+
+function num(value: FormDataEntryValue | null) {
+  if (value == null || value === "") return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
+  const { id } = await params;
+
+  const form = await request.formData();
+  const name = String(form.get("name") || "").trim();
+  const categoryId = String(form.get("categoryId") || "");
+  if (!name || !categoryId) {
+    return NextResponse.json({ error: "Name and category are required" }, { status: 400 });
+  }
+
+  const existing = await prisma.product.findUnique({ where: { id } });
+  if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  const urls = await collectProductImages(form);
+
+  const product = await prisma.product.update({
+    where: { id },
+    data: {
+      name,
+      slug: await uniqueSlug(String(form.get("slug") || name), id),
+      description: String(form.get("description") || ""),
+      details: String(form.get("details") || ""),
+      price: num(form.get("price")),
+      priceUnit: String(form.get("priceUnit") || "Piece"),
+      moq: num(form.get("moq")) ? Math.round(num(form.get("moq"))!) : null,
+      size: String(form.get("size") || "") || null,
+      color: String(form.get("color") || "") || null,
+      material: String(form.get("material") || "Concrete"),
+      design: String(form.get("design") || "") || null,
+      usage: String(form.get("usage") || "") || null,
+      shape: String(form.get("shape") || "") || null,
+      featured: form.get("featured") === "true" || form.get("featured") === "on",
+      inStock: form.get("inStock") === "true" || form.get("inStock") === "on",
+      categoryId,
+      image: urls[0] || null,
+    },
+  });
+
+  await replaceProductImages(id, urls);
+  return NextResponse.json(product);
+}
+
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
+  const { id } = await params;
+  await prisma.product.delete({ where: { id } });
+  return NextResponse.json({ ok: true });
+}
