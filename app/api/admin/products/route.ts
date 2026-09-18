@@ -50,7 +50,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Name and category are required" }, { status: 400 });
   }
 
-  const urls = await collectProductImages(form);
+  let urls: string[] = [];
+  try {
+    urls = await collectProductImages(form);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Could not save photos";
+    return NextResponse.json({ error: message }, { status: 400 });
+  }
+
   const product = await prisma.product.create({
     data: {
       ...fields,

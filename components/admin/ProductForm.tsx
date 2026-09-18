@@ -64,24 +64,58 @@ export function ProductForm({
     }
     const url = product?.id ? `/api/admin/products/${product.id}` : "/api/admin/products";
     const method = product?.id ? "PUT" : "POST";
-    const response = await fetch(url, { method, body: form });
-    const data = await response.json();
-    setSaving(false);
-    if (!response.ok) {
-      setStatus(data.error || "Could not save product");
-      return;
+    try {
+      const response = await fetch(url, { method, body: form });
+      const text = await response.text();
+      let data: { error?: string } = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        data = {};
+      }
+      setSaving(false);
+      if (!response.ok) {
+        setStatus(
+          data.error ||
+            (response.status === 413
+              ? "Photo is too large. Use a JPG or PNG under 8MB."
+              : "Could not save product"),
+        );
+        return;
+      }
+      router.push("/admin/products");
+      router.refresh();
+    } catch {
+      setSaving(false);
+      setStatus("Could not save product. Check the photo and try again.");
     }
-    router.push("/admin/products");
-    router.refresh();
   }
 
   function addFiles(list: FileList | null) {
     if (!list) return;
-    const next = Array.from(list).map((file) => ({
-      url: URL.createObjectURL(file),
-      file,
-    }));
-    setPhotos((current) => [...current, ...next]);
+    const allowed = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    const next: DraftPhoto[] = [];
+    for (const file of Array.from(list)) {
+      const type = file.type.toLowerCase();
+      const name = file.name.toLowerCase();
+      const okType =
+        allowed.includes(type) ||
+        name.endsWith(".jpg") ||
+        name.endsWith(".jpeg") ||
+        name.endsWith(".png") ||
+        name.endsWith(".webp") ||
+        name.endsWith(".gif");
+      if (!okType) {
+        setStatus("Use JPG, PNG, WEBP, or GIF. iPhone: set Camera to Most Compatible.");
+        continue;
+      }
+      if (file.size > 8 * 1024 * 1024) {
+        setStatus("Each photo must be under 8MB.");
+        continue;
+      }
+      next.push({ url: URL.createObjectURL(file), file });
+    }
+    if (next.length) setPhotos((current) => [...current, ...next]);
   }
 
   return (
@@ -179,7 +213,7 @@ export function ProductForm({
             Add photos
             <input
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif"
               multiple
               className="hidden"
               onChange={(event) => {
