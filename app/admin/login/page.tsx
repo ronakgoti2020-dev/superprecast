@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage() {
@@ -50,9 +51,9 @@ export default function AdminLoginPage() {
           {loading ? "Signing in..." : "Sign in"}
         </button>
         <p className="mt-4 text-center text-sm">
-          <a href="/" className="text-terracotta">
+          <Link href="/" className="text-terracotta">
             Back to website
-          </a>
+          </Link>
         </p>
       </form>
     </main>
