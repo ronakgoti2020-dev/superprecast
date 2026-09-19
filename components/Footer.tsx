@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getSettings } from "@/lib/settings";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export async function Footer() {
   const settings = await getSettings();
@@ -8,11 +9,14 @@ export async function Footer() {
     <footer className="mt-20 border-t border-ink/10 bg-ink text-cream">
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 md:grid-cols-4">
         <div className="md:col-span-2">
-          <p className="font-display text-3xl">Super Precast</p>
+          <div className="flex items-center gap-3">
+            <BrandLogo size={56} />
+            <p className="font-display text-3xl">Super Precast</p>
+          </div>
           <p className="mt-4 max-w-md text-sm leading-7 text-stone">
-            Established in 2015 at Bharuch, Gujarat. A trusted proprietorship for
-            concrete jali, kerb stones, paver blocks, and precast products for
-            residential and commercial projects.
+            Where innovation meets elevation. Manufacturer and supplier of
+            elevation jali, paver blocks, curbstones, cover blocks, grass pavers,
+            and customized precast solutions since 2015.
           </p>
         </div>
         <div>

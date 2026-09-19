@@ -10,15 +10,32 @@ export default function AboutPage() {
     <main className="mx-auto max-w-6xl px-5 py-16">
       <p className="text-xs uppercase tracking-[0.28em] text-terracotta">About us</p>
       <h1 className="mt-3 max-w-3xl font-display text-5xl leading-tight">
-        A Bharuch proprietorship making precast concrete useful and well finished.
+        Welcome to Super Precast, where innovation meets elevation.
       </h1>
-      <p className="mt-8 max-w-3xl text-base leading-8 text-ink-soft">
-        Established in 2015 at Bharuch, Gujarat, Super Precast is a trusted
-        proprietorship engaged as a trader, retailer, and manufacturer of
-        high-quality Concrete Jali, Concrete Kerb Stones, Paver Blocks, and a
-        wide range of precast concrete products. We focus on durability, design,
-        and customer satisfaction for residential and commercial projects.
-      </p>
+      <div className="mt-8 max-w-3xl space-y-6 text-base leading-8 text-ink-soft">
+        <p>
+          We are dedicated to crafting high-quality elevation blocks that elevate
+          both architectural standards and creativity. Our commitment to precision
+          engineering and sustainable materials ensures each block not only
+          enhances structural integrity but also inspires limitless design
+          possibilities. Join us in building a future where every elevation tells
+          a story of craftsmanship and vision.
+        </p>
+        <p>
+          We are a leading manufacturer and supplier of high-quality precast and
+          construction materials, including elevation jali, paver blocks,
+          curbstones, cover blocks, grass pavers, cement ventilation windows, and
+          customized precast solutions. Our products are designed to offer
+          durability, aesthetic appeal, and functionality, catering to a wide
+          range of residential, commercial, and industrial applications.
+        </p>
+        <p>
+          With a focus on quality, customization, and sustainability, we provide
+          reliable and cost-effective solutions that meet the diverse needs of
+          our clients, ensuring both structural integrity and visual excellence
+          in every project.
+        </p>
+      </div>
 
       <div className="mt-14 grid gap-6 md:grid-cols-3">
         {[

@@ -14,6 +14,7 @@ export function CategoryManager({ categories }: { categories: CategoryRow[] }) {
   const router = useRouter();
   const [status, setStatus] = useState("");
   const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState("");
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -34,6 +35,26 @@ export function CategoryManager({ categories }: { categories: CategoryRow[] }) {
     }
     form.reset();
     setStatus(`Added “${created.name}”.`);
+    router.refresh();
+  }
+
+  async function onDelete(category: CategoryRow) {
+    const count = category._count?.products ?? 0;
+    if (count > 0) {
+      setStatus(`Move or delete ${count} product(s) in “${category.name}” first.`);
+      return;
+    }
+    if (!confirm(`Delete “${category.name}”?`)) return;
+    setDeletingId(category.id);
+    setStatus("");
+    const response = await fetch(`/api/admin/categories/${category.id}`, { method: "DELETE" });
+    const data = await response.json().catch(() => ({}));
+    setDeletingId("");
+    if (!response.ok) {
+      setStatus(data.error || "Could not delete category.");
+      return;
+    }
+    setStatus(`Deleted “${category.name}”.`);
     router.refresh();
   }
 
@@ -61,12 +82,13 @@ export function CategoryManager({ categories }: { categories: CategoryRow[] }) {
               <th className="px-4 py-3 font-medium">Category</th>
               <th className="px-4 py-3 font-medium">Description</th>
               <th className="px-4 py-3 font-medium">Products</th>
+              <th className="px-4 py-3 font-medium"></th>
             </tr>
           </thead>
           <tbody>
             {categories.length === 0 ? (
               <tr>
-                <td colSpan={3} className="px-4 py-6 text-ink-soft">
+                <td colSpan={4} className="px-4 py-6 text-ink-soft">
                   No categories yet. Add one above.
                 </td>
               </tr>
@@ -76,6 +98,16 @@ export function CategoryManager({ categories }: { categories: CategoryRow[] }) {
                   <td className="px-4 py-3">{category.name}</td>
                   <td className="px-4 py-3 text-ink-soft">{category.description || "—"}</td>
                   <td className="px-4 py-3">{category._count?.products ?? 0}</td>
+                  <td className="px-4 py-3 text-right">
+                    <button
+                      type="button"
+                      disabled={deletingId === category.id}
+                      onClick={() => onDelete(category)}
+                      className="text-terracotta disabled:opacity-60"
+                    >
+                      {deletingId === category.id ? "Deleting..." : "Delete"}
+                    </button>
+                  </td>
                 </tr>
               ))
             )}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LayoutDashboard, Package, Tags, Images, MessageSquare, Settings, LogOut } from "lucide-react";
+import { BrandLogo } from "@/components/BrandLogo";
 
 const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -26,8 +27,13 @@ export function AdminSidebar() {
   return (
     <aside className="flex w-full flex-col bg-ink text-cream md:min-h-screen md:w-64">
       <div className="border-b border-white/10 px-6 py-6">
-        <p className="font-display text-2xl">Super Precast</p>
-        <p className="mt-1 text-xs uppercase tracking-[0.2em] text-gold">Admin</p>
+        <div className="flex items-center gap-3">
+          <BrandLogo size={40} />
+          <div>
+            <p className="font-display text-2xl leading-none">Super Precast</p>
+            <p className="mt-1 text-xs uppercase tracking-[0.2em] text-gold">Admin</p>
+          </div>
+        </div>
       </div>
       <nav className="flex flex-1 flex-col gap-1 p-4">
         {links.map((link) => {

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { BrandLogo } from "@/components/BrandLogo";
 
 const links = [
   { href: "/", label: "Home" },
@@ -21,9 +22,7 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-ink/10 bg-cream/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
         <Link href="/" className="flex items-center gap-3">
-          <span className="grid h-11 w-11 place-items-center bg-ink text-cream">
-            <span className="font-display text-lg leading-none">SP</span>
-          </span>
+          <BrandLogo size={44} />
           <span>
             <span className="block font-display text-lg leading-none tracking-wide">
               Super Precast

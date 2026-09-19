@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { ProductCard } from "@/components/ProductCard";
+import { ProductSearch } from "@/components/ProductSearch";
 
 export const dynamic = "force-dynamic";
 
@@ -44,20 +45,13 @@ export default async function ProductsPage({
         category or search by name, colour, or design.
       </p>
 
-      <form className="mt-8 flex flex-wrap gap-3">
-        <input
-          name="q"
-          defaultValue={q}
-          placeholder="Search products"
-          className="min-w-56 flex-1 border border-ink/15 bg-paper px-4 py-3"
-        />
-        {category ? <input type="hidden" name="category" value={category} /> : null}
-        <button className="bg-ink px-5 py-3 text-sm text-cream">Search</button>
-      </form>
+      <div className="mt-8">
+        <ProductSearch initialQ={q || ""} category={category} />
+      </div>
 
       <div className="mt-6 flex flex-wrap gap-2">
         <Link
-          href="/products"
+          href={q ? `/products?q=${encodeURIComponent(q)}` : "/products"}
           className={`border px-4 py-2 text-sm ${!category ? "border-terracotta bg-terracotta text-cream" : "border-ink/15"}`}
         >
           All
@@ -65,7 +59,11 @@ export default async function ProductsPage({
         {categories.map((item) => (
           <Link
             key={item.id}
-            href={`/products?category=${item.slug}`}
+            href={
+              q
+                ? `/products?category=${item.slug}&q=${encodeURIComponent(q)}`
+                : `/products?category=${item.slug}`
+            }
             className={`border px-4 py-2 text-sm ${
               category === item.slug
                 ? "border-terracotta bg-terracotta text-cream"

@@ -18,7 +18,11 @@ export const metadata: Metadata = {
     template: "%s | Super Precast",
   },
   description:
-    "Super Precast, Ankleshwar, Gujarat — concrete jali, kerb stones, paver blocks and precast products since 2015.",
+    "Super Precast, Ankleshwar — where innovation meets elevation. Elevation jali, paver blocks, curbstones, cover blocks, and customized precast since 2015.",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({

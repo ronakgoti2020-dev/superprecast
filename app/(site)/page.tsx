@@ -33,11 +33,12 @@ export default async function HomePage() {
           <div>
             <p className="text-xs uppercase tracking-[0.35em] text-gold">Since 2015 · Ankleshwar</p>
             <h1 className="mt-5 font-display text-5xl leading-[1.05] md:text-7xl">
-              Precast concrete with strength, pattern, and finish.
+              Where innovation meets elevation.
             </h1>
             <p className="mt-6 max-w-xl text-base leading-8 text-stone">
-              Super Precast supplies concrete jali, kerb stones, paver blocks, and
-              cover blocks for homes, landscapes, and commercial sites across Gujarat.
+              Super Precast crafts high-quality elevation blocks, jali, pavers,
+              curbstones, and cover blocks — durable, precise, and made for
+              residential, commercial, and industrial projects across Gujarat.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link href="/products" className="bg-terracotta px-6 py-3 text-sm">

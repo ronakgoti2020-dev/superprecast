@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -34,6 +35,7 @@ export default function AdminLoginPage() {
   return (
     <main className="grid min-h-screen place-items-center bg-sand px-5">
       <form onSubmit={onSubmit} className="w-full max-w-md border border-ink/10 bg-paper p-8">
+        <BrandLogo size={72} className="mb-4" />
         <p className="text-xs uppercase tracking-[0.22em] text-terracotta">Super Precast</p>
         <h1 className="mt-2 font-display text-4xl">Admin login</h1>
         <p className="mt-2 mb-8 text-sm text-ink-soft">
