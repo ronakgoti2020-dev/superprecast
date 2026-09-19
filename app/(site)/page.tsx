@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { ProductCard } from "@/components/ProductCard";
+import { ProductPhoto } from "@/components/ProductPhoto";
 import { QuoteForm } from "@/components/QuoteForm";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [categories, featured, productCount] = await Promise.all([
+  const [categories, featured, productCount, delivered] = await Promise.all([
     prisma.category.findMany({
       include: { _count: { select: { products: true } } },
       orderBy: { name: "asc" },
@@ -18,6 +19,11 @@ export default async function HomePage() {
       orderBy: { createdAt: "desc" },
     }),
     prisma.product.count(),
+    prisma.project.findMany({
+      where: { featured: true },
+      take: 3,
+      orderBy: { createdAt: "desc" },
+    }),
   ]);
 
   return (
@@ -94,6 +100,35 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {delivered.length > 0 ? (
+        <section className="mx-auto max-w-6xl px-5 py-20">
+          <div className="flex items-end justify-between gap-6">
+            <div>
+              <p className="text-xs uppercase tracking-[0.28em] text-terracotta">Delivered work</p>
+              <h2 className="mt-3 font-display text-4xl">Sites we have completed</h2>
+            </div>
+            <Link href="/work" className="text-sm text-terracotta">
+              View all
+            </Link>
+          </div>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {delivered.map((project) => (
+              <Link key={project.id} href="/work" className="group border border-ink/10 bg-paper">
+                <div className="aspect-[4/3] overflow-hidden bg-sand">
+                  {project.image ? <ProductPhoto src={project.image} alt={project.title} /> : null}
+                </div>
+                <div className="p-5">
+                  <p className="text-xs uppercase tracking-[0.18em] text-terracotta">
+                    {[project.year, project.location].filter(Boolean).join(" · ") || "Delivered"}
+                  </p>
+                  <h3 className="mt-2 font-display text-2xl group-hover:text-terracotta">{project.title}</h3>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <section className="mx-auto grid max-w-6xl gap-12 px-5 py-20 md:grid-cols-2">
         <div>

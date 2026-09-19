@@ -19,6 +19,7 @@ export async function Footer() {
           <p className="text-xs uppercase tracking-[0.2em] text-gold">Explore</p>
           <div className="mt-4 flex flex-col gap-2 text-sm text-stone">
             <Link href="/products">All Products</Link>
+            <Link href="/work">Our Work</Link>
             <Link href="/products?category=concrete-jali">Concrete Jali</Link>
             <Link href="/products?category=concrete-kerb-stone">Kerb Stones</Link>
             <Link href="/about">About Us</Link>

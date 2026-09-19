@@ -2,7 +2,6 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/utils";
 import { DeleteProductButton } from "@/components/admin/DeleteProductButton";
-import { CategoryCreate } from "@/components/admin/CategoryCreate";
 
 export const dynamic = "force-dynamic";
 
@@ -26,8 +25,6 @@ export default async function AdminProductsPage() {
           Add product
         </Link>
       </div>
-
-      <CategoryCreate categories={categories} />
 
       <div className="mt-8 overflow-x-auto border border-ink/10 bg-paper">
         <table className="w-full min-w-[720px] text-left text-sm">

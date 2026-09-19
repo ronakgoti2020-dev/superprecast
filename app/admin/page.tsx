@@ -4,11 +4,12 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardPage() {
-  const [products, inquiries, unread, categories] = await Promise.all([
+  const [products, inquiries, unread, categories, projects] = await Promise.all([
     prisma.product.count(),
     prisma.inquiry.count(),
     prisma.inquiry.count({ where: { status: "new" } }),
     prisma.category.count(),
+    prisma.project.count(),
   ]);
   const latest = await prisma.inquiry.findMany({
     take: 5,
@@ -23,8 +24,8 @@ export default async function AdminDashboardPage() {
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
           ["Products", products, "/admin/products"],
-          ["Categories", categories, "/admin/products"],
-          ["Enquiries", inquiries, "/admin/inquiries"],
+          ["Categories", categories, "/admin/categories"],
+          ["Our work", projects, "/admin/work"],
           ["New enquiries", unread, "/admin/inquiries"],
         ].map(([label, value, href]) => (
           <Link key={label} href={String(href)} className="border border-ink/10 bg-paper p-6">

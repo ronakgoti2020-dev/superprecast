@@ -77,3 +77,24 @@ model Admin {
   username String @unique
   password String
 }
+
+model Project {
+  id          String         @id @default(cuid())
+  title       String
+  location    String         @default("")
+  year        String         @default("")
+  description String         @default("")
+  image       String?
+  featured    Boolean        @default(false)
+  images      ProjectImage[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model ProjectImage {
+  id        String  @id @default(cuid())
+  url       String
+  sortOrder Int     @default(0)
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}

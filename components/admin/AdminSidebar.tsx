@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Package, MessageSquare, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, Package, Tags, Images, MessageSquare, Settings, LogOut } from "lucide-react";
 
 const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/products", label: "Products", icon: Package },
+  { href: "/admin/categories", label: "Categories", icon: Tags },
+  { href: "/admin/work", label: "Our Work", icon: Images },
   { href: "/admin/inquiries", label: "Enquiries", icon: MessageSquare },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
@@ -30,7 +32,8 @@ export function AdminSidebar() {
       <nav className="flex flex-1 flex-col gap-1 p-4">
         {links.map((link) => {
           const Icon = link.icon;
-          const active = pathname === link.href;
+          const active =
+            link.href === "/admin" ? pathname === "/admin" : pathname.startsWith(link.href);
           return (
             <Link
               key={link.href}
