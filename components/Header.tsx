@@ -22,7 +22,7 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-ink/10 bg-cream/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
         <Link href="/" className="flex items-center gap-3">
-          <BrandLogo size={44} />
+          <BrandLogo size={56} />
           <span>
             <span className="block font-display text-lg leading-none tracking-wide">
               Super Precast

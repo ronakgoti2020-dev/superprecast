@@ -3,7 +3,7 @@ type Props = {
   className?: string;
 };
 
-export function BrandLogo({ size = 44, className = "" }: Props) {
+export function BrandLogo({ size = 56, className = "" }: Props) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
@@ -11,7 +11,7 @@ export function BrandLogo({ size = 44, className = "" }: Props) {
       alt="Super Precast"
       width={size}
       height={size}
-      className={`rounded-full bg-white object-cover ${className}`}
+      className={`object-contain ${className}`}
       style={{ width: size, height: size }}
     />
   );
