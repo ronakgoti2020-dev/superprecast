@@ -25,6 +25,7 @@ export default async function ProductsPage({
               { name: { contains: q } },
               { description: { contains: q } },
               { color: { contains: q } },
+              { weight: { contains: q } },
               { design: { contains: q } },
             ],
           }

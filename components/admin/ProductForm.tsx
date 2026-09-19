@@ -17,6 +17,7 @@ type ProductValue = {
   moq: number | null;
   size: string | null;
   color: string | null;
+  weight: string | null;
   material: string;
   design: string | null;
   usage: string | null;
@@ -174,6 +175,14 @@ export function ProductForm({
                 defaultValue={product?.color ?? ""}
                 className="admin-input"
                 onChange={(e) => setColor(e.target.value)}
+              />
+            </Field>
+            <Field label="Weight">
+              <input
+                name="weight"
+                defaultValue={product?.weight ?? ""}
+                placeholder="2.5 kg"
+                className="admin-input"
               />
             </Field>
             <Field label="Material">

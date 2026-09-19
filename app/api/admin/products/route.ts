@@ -30,6 +30,7 @@ function productFields(form: FormData) {
     moq: num(form.get("moq")) ? Math.round(num(form.get("moq"))!) : null,
     size: String(form.get("size") || "") || null,
     color: String(form.get("color") || "") || null,
+    weight: String(form.get("weight") || "") || null,
     material: String(form.get("material") || "Concrete"),
     design: String(form.get("design") || "") || null,
     usage: String(form.get("usage") || "") || null,

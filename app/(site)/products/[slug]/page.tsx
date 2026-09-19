@@ -41,6 +41,7 @@ export default async function ProductDetailPage({
     ["Category", product.category.name],
     ["Size", product.size],
     ["Colour", product.color],
+    ["Weight", product.weight],
     ["Material", product.material],
     ["Design", product.design],
     ["Usage", product.usage],

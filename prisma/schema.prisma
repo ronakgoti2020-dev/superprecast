@@ -26,6 +26,7 @@ model Product {
   moq         Int?
   size        String?
   color       String?
+  weight      String?
   material    String         @default("Concrete")
   design      String?
   usage       String?
