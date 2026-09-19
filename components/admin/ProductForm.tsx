@@ -48,6 +48,11 @@ export function ProductForm({
     }
     return product?.image ? [{ url: product.image }] : [];
   });
+  const [categoryList, setCategoryList] = useState(categories);
+  const [categoryId, setCategoryId] = useState(product?.categoryId || "");
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [addingCategory, setAddingCategory] = useState(false);
+  const [categoryStatus, setCategoryStatus] = useState("");
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -118,6 +123,33 @@ export function ProductForm({
     if (next.length) setPhotos((current) => [...current, ...next]);
   }
 
+  async function addCategory() {
+    const name = newCategoryName.trim();
+    if (!name) {
+      setCategoryStatus("Enter a category name.");
+      return;
+    }
+    setAddingCategory(true);
+    setCategoryStatus("");
+    const response = await fetch("/api/admin/categories", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name }),
+    });
+    const data = await response.json().catch(() => ({}));
+    setAddingCategory(false);
+    if (!response.ok) {
+      setCategoryStatus(data.error || "Could not add category. Name may already exist.");
+      return;
+    }
+    setCategoryList((current) =>
+      [...current, { id: data.id, name: data.name }].sort((a, b) => a.name.localeCompare(b.name)),
+    );
+    setCategoryId(data.id);
+    setNewCategoryName("");
+    setCategoryStatus(`Added “${data.name}”.`);
+  }
+
   return (
     <form onSubmit={onSubmit} className="space-y-8">
       <div className="grid gap-8 lg:grid-cols-2">
@@ -129,14 +161,44 @@ export function ProductForm({
             <input name="slug" defaultValue={product?.slug} className="admin-input" />
           </Field>
           <Field label="Category">
-            <select name="categoryId" required defaultValue={product?.categoryId} className="admin-input">
+            <select
+              name="categoryId"
+              required
+              value={categoryId}
+              onChange={(event) => setCategoryId(event.target.value)}
+              className="admin-input"
+            >
               <option value="">Select category</option>
-              {categories.map((category) => (
+              {categoryList.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
                 </option>
               ))}
             </select>
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+              <input
+                value={newCategoryName}
+                onChange={(event) => setNewCategoryName(event.target.value)}
+                placeholder="New category name"
+                className="admin-input"
+              />
+              <button
+                type="button"
+                disabled={addingCategory}
+                onClick={addCategory}
+                className="shrink-0 bg-ink px-4 py-3 text-sm text-cream disabled:opacity-60"
+              >
+                {addingCategory ? "Adding..." : "Add category"}
+              </button>
+            </div>
+            {categoryStatus ? <p className="mt-2 text-sm text-ink-soft">{categoryStatus}</p> : null}
+            {categoryList.length > 0 ? (
+              <p className="mt-2 text-xs text-ink-soft">
+                {categoryList.map((category) => category.name).join(" · ")}
+              </p>
+            ) : (
+              <p className="mt-2 text-xs text-terracotta">No categories yet. Add one above.</p>
+            )}
           </Field>
           <Field label="Description">
             <textarea name="description" rows={5} defaultValue={product?.description} className="admin-input" />

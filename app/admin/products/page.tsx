@@ -27,7 +27,7 @@ export default async function AdminProductsPage() {
         </Link>
       </div>
 
-      <CategoryCreate />
+      <CategoryCreate categories={categories} />
 
       <div className="mt-8 overflow-x-auto border border-ink/10 bg-paper">
         <table className="w-full min-w-[720px] text-left text-sm">

@@ -3,10 +3,11 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
-export function CategoryCreate() {
+export function CategoryCreate({ categories = [] }: { categories?: { id: string; name: string }[] }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState("");
+  const [list, setList] = useState(categories);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -17,18 +18,30 @@ export function CategoryCreate() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
+    const created = await response.json().catch(() => ({}));
     if (!response.ok) {
       setStatus("Could not add category. Name may already exist.");
       return;
     }
+    setList((current) =>
+      [...current, { id: created.id, name: created.name }].sort((a, b) => a.name.localeCompare(b.name)),
+    );
     form.reset();
     setOpen(false);
+    setStatus(`Added “${created.name}”.`);
     router.refresh();
   }
 
   return (
     <div className="mt-6">
-      <button onClick={() => setOpen((v) => !v)} className="text-sm text-terracotta">
+      {list.length > 0 ? (
+        <p className="mb-3 text-sm text-ink-soft">
+          Categories: {list.map((category) => category.name).join(" · ")}
+        </p>
+      ) : (
+        <p className="mb-3 text-sm text-terracotta">No categories yet.</p>
+      )}
+      <button type="button" onClick={() => setOpen((v) => !v)} className="text-sm text-terracotta">
         {open ? "Close" : "Add a new category"}
       </button>
       {open ? (
