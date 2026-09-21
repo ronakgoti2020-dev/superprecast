@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ProductVisual } from "@/components/ProductVisual";
+import { compressImage } from "@/lib/compress-image";
 
 type Category = { id: string; name: string };
 
@@ -80,7 +81,7 @@ export function ProductForm({
         setStatus(
           data.error ||
             (response.status === 413
-              ? "Photo is too large. Use a JPG or PNG under 8MB."
+              ? "Photo is still too large after shrinking. Try one photo at a time."
               : "Could not save product"),
         );
         return;
@@ -93,31 +94,22 @@ export function ProductForm({
     }
   }
 
-  function addFiles(list: FileList | null) {
+  async function addFiles(list: FileList | null) {
     if (!list) return;
-    const allowed = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    setStatus("Preparing photos...");
     const next: DraftPhoto[] = [];
     for (const file of Array.from(list)) {
-      const type = file.type.toLowerCase();
-      const name = file.name.toLowerCase();
-      const okType =
-        allowed.includes(type) ||
-        name.endsWith(".jpg") ||
-        name.endsWith(".jpeg") ||
-        name.endsWith(".png") ||
-        name.endsWith(".webp") ||
-        name.endsWith(".gif");
-      if (!okType) {
-        setStatus("Use JPG, PNG, WEBP, or GIF. iPhone: set Camera to Most Compatible.");
-        continue;
+      try {
+        const compressed = await compressImage(file);
+        next.push({ url: URL.createObjectURL(compressed), file: compressed });
+      } catch (error) {
+        setStatus(error instanceof Error ? error.message : "Could not add this photo.");
       }
-      if (file.size > 8 * 1024 * 1024) {
-        setStatus("Each photo must be under 8MB.");
-        continue;
-      }
-      next.push({ url: URL.createObjectURL(file), file });
     }
-    if (next.length) setPhotos((current) => [...current, ...next]);
+    if (next.length) {
+      setPhotos((current) => [...current, ...next]);
+      setStatus("");
+    }
   }
 
   return (
