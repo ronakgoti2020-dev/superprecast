@@ -6,6 +6,13 @@ import { QuoteForm } from "@/components/QuoteForm";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = {
+  title: "Super Precast | Concrete Jali, Kerb Stones & Pavers",
+  description:
+    "Super Precast, Ankleshwar — where innovation meets elevation. Elevation jali, paver blocks, curbstones, cover blocks, and customized precast since 2015.",
+  alternates: { canonical: "https://superprecastindia.com/" },
+};
+
 export default async function HomePage() {
   const [categories, featured, productCount, delivered] = await Promise.all([
     prisma.category.findMany({

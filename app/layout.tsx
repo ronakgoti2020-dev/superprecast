@@ -13,6 +13,7 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://superprecastindia.com"),
   title: {
     default: "Super Precast | Concrete Jali, Kerb Stones & Pavers",
     template: "%s | Super Precast",

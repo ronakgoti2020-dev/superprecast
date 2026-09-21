@@ -7,6 +7,8 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Our Work",
   description: "Projects Super Precast has delivered — jali, kerb, and paver work across Gujarat.",
+  alternates: { canonical: "https://superprecastindia.com/work" },
+  robots: { index: true, follow: true },
 };
 
 export default async function WorkPage() {
