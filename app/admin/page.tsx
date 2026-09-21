@@ -4,13 +4,18 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardPage() {
-  const [products, inquiries, unread, categories, projects] = await Promise.all([
+  const [products, inquiries, unread, categories] = await Promise.all([
     prisma.product.count(),
     prisma.inquiry.count(),
     prisma.inquiry.count({ where: { status: "new" } }),
     prisma.category.count(),
-    prisma.project.count(),
   ]);
+  let projects = 0;
+  try {
+    projects = await prisma.project.count();
+  } catch {
+    projects = 0;
+  }
   const latest = await prisma.inquiry.findMany({
     take: 5,
     orderBy: { createdAt: "desc" },
