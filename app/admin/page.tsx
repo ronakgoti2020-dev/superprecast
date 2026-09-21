@@ -41,7 +41,7 @@ export default async function AdminDashboardPage() {
       </div>
       <div className="mt-10 border border-ink/10 bg-paper p-6">
         <div className="flex items-center justify-between">
-          <h2 className="font-display text-2xl">Latest enquiries</h2>
+          <h2 className="font-display text-2xl">Latest enquiries ({inquiries})</h2>
           <Link href="/admin/inquiries" className="text-sm text-terracotta">
             View all
           </Link>

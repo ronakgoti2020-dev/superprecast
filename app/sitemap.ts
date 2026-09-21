@@ -1,7 +1,11 @@
-export const sitemapUrls = [
-  "https://superprecastindia.com/",
-  "https://superprecastindia.com/products",
-  "https://superprecastindia.com/about",
-  "https://superprecastindia.com/contact",
-  "https://superprecastindia.com/work",
-];
+import type { MetadataRoute } from "next";
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    { url: "https://superprecastindia.com/" },
+    { url: "https://superprecastindia.com/products" },
+    { url: "https://superprecastindia.com/about" },
+    { url: "https://superprecastindia.com/contact" },
+    { url: "https://superprecastindia.com/work" },
+  ];
+}
