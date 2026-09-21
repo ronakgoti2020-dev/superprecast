@@ -15,8 +15,8 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   metadataBase: new URL("https://superprecastindia.com"),
   title: {
-    default: "Super Precast | Concrete Jali, Kerb Stones & Pavers",
-    template: "%s | Super Precast",
+    default: "Super Precast India | Elevation Jali, Pavers & Precast",
+    template: "%s | Super Precast India",
   },
   description:
     "Super Precast, Ankleshwar — where innovation meets elevation. Elevation jali, paver blocks, curbstones, cover blocks, and customized precast since 2015.",

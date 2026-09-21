@@ -7,10 +7,17 @@ import { QuoteForm } from "@/components/QuoteForm";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Super Precast | Concrete Jali, Kerb Stones & Pavers",
+  title: "Super Precast India | Elevation Jali, Pavers & Precast",
   description:
-    "Super Precast, Ankleshwar — where innovation meets elevation. Elevation jali, paver blocks, curbstones, cover blocks, and customized precast since 2015.",
+    "Official website of Super Precast India, Ankleshwar. Elevation jali, paver blocks, curbstones, cover blocks, and customized precast since 2015.",
   alternates: { canonical: "https://superprecastindia.com/" },
+  openGraph: {
+    url: "https://superprecastindia.com/",
+    title: "Super Precast India",
+    description:
+      "Official website of Super Precast India — elevation jali, pavers, curbstones, and precast from Ankleshwar, Gujarat.",
+    type: "website",
+  },
 };
 
 export default async function HomePage() {
@@ -35,6 +42,25 @@ export default async function HomePage() {
 
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Super Precast India",
+            url: "https://superprecastindia.com/",
+            logo: "https://superprecastindia.com/logo.png",
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: "Ankleshwar",
+              addressRegion: "Gujarat",
+              postalCode: "393002",
+              addressCountry: "IN",
+            },
+          }),
+        }}
+      />
       <section className="jali-bg grain relative overflow-hidden text-cream">
         <div className="relative mx-auto grid min-h-[88vh] max-w-6xl items-center gap-12 px-5 py-20 md:grid-cols-2">
           <div>
