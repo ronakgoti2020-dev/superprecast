@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 import { InquiryStatus } from "@/components/admin/InquiryStatus";
+import { DeleteInquiryButton } from "@/components/admin/DeleteInquiryButton";
 import { InquirySearch } from "@/components/admin/InquirySearch";
 import { inquirySearchWhere } from "@/lib/inquiry-search";
 
@@ -41,7 +42,10 @@ export default async function AdminInquiriesPage({
                   {item.product?.name || "General enquiry"} · {formatDate(item.createdAt)}
                 </p>
               </div>
-              <InquiryStatus id={item.id} status={item.status} />
+              <div className="flex flex-col items-end gap-2">
+                <InquiryStatus id={item.id} status={item.status} />
+                <DeleteInquiryButton id={item.id} name={item.name} />
+              </div>
             </div>
             <p className="mt-4 whitespace-pre-wrap text-sm leading-7">{item.message}</p>
           </article>

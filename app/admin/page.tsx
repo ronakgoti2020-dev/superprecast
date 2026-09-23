@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { InquirySearch } from "@/components/admin/InquirySearch";
+import { DeleteInquiryButton } from "@/components/admin/DeleteInquiryButton";
 import { inquirySearchWhere } from "@/lib/inquiry-search";
 
 export const dynamic = "force-dynamic";
@@ -71,7 +72,10 @@ export default async function AdminDashboardPage({
                   {item.product?.name || "General enquiry"} · {item.phone}
                 </p>
               </div>
-              <span className="uppercase tracking-wide text-xs text-terracotta">{item.status}</span>
+              <div className="flex items-center gap-3">
+                <span className="uppercase tracking-wide text-xs text-terracotta">{item.status}</span>
+                <DeleteInquiryButton id={item.id} name={item.name} />
+              </div>
             </div>
           ))}
           {latest.length === 0 ? (
