@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { QuoteForm } from "@/components/QuoteForm";
 import { getSettings, instagramHref, mapsEmbedSrc, mapsHref } from "@/lib/settings";
 import { LocationMap } from "@/components/LocationMap";
+import { InstagramIcon } from "@/components/InstagramIcon";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -57,8 +58,14 @@ export default async function ContactPage() {
           {instagram ? (
             <p>
               <span className="block text-ink-soft">Instagram</span>
-              <a href={instagram} target="_blank" rel="noreferrer">
-                {settings.instagram}
+              <a
+                href={instagram}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2"
+              >
+                <InstagramIcon className="h-5 w-5" />
+                Instagram
               </a>
             </p>
           ) : null}

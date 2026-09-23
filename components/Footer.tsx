@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getSettings, instagramHref, logoSrc, mapsEmbedSrc, mapsHref } from "@/lib/settings";
 import { BrandLogo } from "@/components/BrandLogo";
 import { LocationMap } from "@/components/LocationMap";
+import { InstagramIcon } from "@/components/InstagramIcon";
 
 export async function Footer() {
   const settings = await getSettings();
@@ -52,7 +53,14 @@ export async function Footer() {
             {settings.email ? <p>{settings.email}</p> : null}
             {instagram ? (
               <p>
-                <a href={instagram} target="_blank" rel="noreferrer">
+                <a
+                  href={instagram}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2"
+                  aria-label="Super Precast on Instagram"
+                >
+                  <InstagramIcon className="h-5 w-5 text-cream" />
                   Instagram
                 </a>
               </p>
