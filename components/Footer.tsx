@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getSettings, instagramHref, logoSrc, mapsEmbedSrc, mapsHref } from "@/lib/settings";
+import { getSettings, instagramHref, logoSrc, mapsHref, resolveMapsEmbedSrc } from "@/lib/settings";
 import { BrandLogo } from "@/components/BrandLogo";
 import { LocationMap } from "@/components/LocationMap";
 import { InstagramIcon } from "@/components/InstagramIcon";
@@ -8,7 +8,7 @@ export async function Footer() {
   const settings = await getSettings();
   const instagram = instagramHref(settings.instagram);
   const map = mapsHref(settings.mapUrl);
-  const embed = mapsEmbedSrc(settings.mapUrl, settings.address);
+  const embed = await resolveMapsEmbedSrc(settings.mapUrl);
 
   return (
     <footer className="mt-20 border-t border-ink/10 bg-ink text-cream">

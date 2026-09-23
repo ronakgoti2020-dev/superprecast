@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { QuoteForm } from "@/components/QuoteForm";
-import { getSettings, instagramHref, mapsEmbedSrc, mapsHref } from "@/lib/settings";
+import { getSettings, instagramHref, mapsHref, resolveMapsEmbedSrc } from "@/lib/settings";
 import { LocationMap } from "@/components/LocationMap";
 import { InstagramIcon } from "@/components/InstagramIcon";
 
@@ -12,7 +12,7 @@ export default async function ContactPage() {
   const settings = await getSettings();
   const instagram = instagramHref(settings.instagram);
   const map = mapsHref(settings.mapUrl);
-  const embed = mapsEmbedSrc(settings.mapUrl, settings.address);
+  const embed = await resolveMapsEmbedSrc(settings.mapUrl);
 
   return (
     <main className="mx-auto max-w-6xl px-5 py-16">

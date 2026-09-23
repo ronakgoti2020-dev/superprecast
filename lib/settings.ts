@@ -67,30 +67,69 @@ export function mapsHref(value?: string | null) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(raw)}`;
 }
 
-export function mapsEmbedSrc(mapUrl?: string | null, address?: string | null) {
-  const raw = mapUrl?.trim() || "";
-  const place = address?.trim() || "";
+function embedFromMapsUrl(url: string) {
+  const raw = url.trim();
   if (!raw) return "";
 
   if (raw.includes("/maps/embed")) {
     return raw.match(/https?:\/\/[^\s"'<>]+/)?.[0] || raw;
   }
 
+  const nameMatch = raw.match(/\/maps\/place\/([^/@]+)/);
+  const name = nameMatch
+    ? decodeURIComponent(nameMatch[1].replace(/\+/g, " "))
+    : "";
   const at = raw.match(/@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/);
-  if (at) {
-    return `https://maps.google.com/maps?q=${at[1]},${at[2]}&z=16&output=embed`;
-  }
+  const pin = raw.match(/!3d(-?\d+(?:\.\d+)?)!4d(-?\d+(?:\.\d+)?)/);
+  const lat = pin?.[1] || at?.[1];
+  const lng = pin?.[2] || at?.[2];
 
-  const coords = raw.match(/!3d(-?\d+(?:\.\d+)?)!4d(-?\d+(?:\.\d+)?)/);
-  if (coords) {
-    return `https://maps.google.com/maps?q=${coords[1]},${coords[2]}&z=16&output=embed`;
+  if (name && lat && lng) {
+    return `https://maps.google.com/maps?q=${encodeURIComponent(name)}&ll=${lat},${lng}&z=17&output=embed`;
   }
-
-  const named = raw.match(/\/maps\/place\/([^/]+)/);
-  if (named) {
-    return `https://maps.google.com/maps?q=${named[1]}&z=16&output=embed`;
+  if (lat && lng) {
+    return `https://maps.google.com/maps?q=${lat},${lng}&z=17&output=embed`;
   }
+  if (name) {
+    return `https://maps.google.com/maps?q=${encodeURIComponent(name)}&z=17&output=embed`;
+  }
+  return "";
+}
 
-  const query = place || raw;
-  return `https://maps.google.com/maps?q=${encodeURIComponent(query)}&z=16&output=embed`;
+async function resolveShortMapsUrl(url: string) {
+  const response = await fetch(url, {
+    redirect: "follow",
+    headers: { "User-Agent": "Mozilla/5.0 Super Precast" },
+  });
+  return response.url || url;
+}
+
+const embedCache = new Map<string, string>();
+
+export async function resolveMapsEmbedSrc(mapUrl?: string | null) {
+  const raw = mapUrl?.trim() || "";
+  if (!raw) return "";
+  const cached = embedCache.get(raw);
+  if (cached) return cached;
+
+  let embed = embedFromMapsUrl(raw);
+  if (!embed && /maps\.app\.goo\.gl|goo\.gl\/maps/i.test(raw)) {
+    try {
+      embed = embedFromMapsUrl(await resolveShortMapsUrl(raw));
+    } catch {
+      embed = "";
+    }
+  }
+  if (!embed) {
+    embed = `https://maps.google.com/maps?q=${encodeURIComponent(raw)}&z=17&output=embed`;
+  }
+  embedCache.set(raw, embed);
+  return embed;
+}
+
+export function mapsEmbedSrc(mapUrl?: string | null) {
+  return embedFromMapsUrl(mapUrl || "") ||
+    (mapUrl?.trim()
+      ? `https://maps.google.com/maps?q=${encodeURIComponent(mapUrl.trim())}&z=17&output=embed`
+      : "");
 }
