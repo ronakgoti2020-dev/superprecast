@@ -40,12 +40,24 @@ export default async function AdminDashboardPage() {
         ))}
       </div>
       <div className="mt-10 border border-ink/10 bg-paper p-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <h2 className="font-display text-2xl">Latest enquiries ({inquiries})</h2>
           <Link href="/admin/inquiries" className="text-sm text-terracotta">
             View all
           </Link>
         </div>
+        <form action="/admin/inquiries" className="mt-4 flex max-w-md gap-2">
+          <input
+            type="search"
+            name="q"
+            placeholder="Search by name or mobile number"
+            className="min-w-0 flex-1 border border-ink/15 bg-sand px-4 py-3"
+            aria-label="Search enquiries by name or mobile number"
+          />
+          <button type="submit" className="bg-ink px-4 py-3 text-sm text-cream">
+            Search
+          </button>
+        </form>
         <div className="mt-4 divide-y divide-ink/10">
           {latest.map((item) => (
             <div key={item.id} className="flex items-center justify-between py-3 text-sm">

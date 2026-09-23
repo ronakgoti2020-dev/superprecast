@@ -1,11 +1,33 @@
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 import { InquiryStatus } from "@/components/admin/InquiryStatus";
+import { InquirySearch } from "@/components/admin/InquirySearch";
+import { Prisma } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminInquiriesPage() {
+function inquirySearchWhere(q?: string): Prisma.InquiryWhereInput | undefined {
+  const query = q?.trim();
+  if (!query) return undefined;
+  const digits = query.replace(/\D/g, "");
+  return {
+    OR: [
+      { name: { contains: query } },
+      { phone: { contains: query } },
+      ...(digits && digits !== query ? [{ phone: { contains: digits } }] : []),
+    ],
+  };
+}
+
+export default async function AdminInquiriesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const { q } = await searchParams;
+  const where = inquirySearchWhere(q);
   const inquiries = await prisma.inquiry.findMany({
+    where,
     orderBy: { createdAt: "desc" },
     include: { product: true },
   });
@@ -14,6 +36,9 @@ export default async function AdminInquiriesPage() {
     <div>
       <h1 className="font-display text-4xl">Enquiries</h1>
       <p className="mt-2 text-ink-soft">Leads from the website quote forms.</p>
+      <div className="mt-6">
+        <InquirySearch initialQ={q ?? ""} />
+      </div>
       <div className="mt-8 space-y-4">
         {inquiries.map((item) => (
           <article key={item.id} className="border border-ink/10 bg-paper p-5">
@@ -35,7 +60,11 @@ export default async function AdminInquiriesPage() {
           </article>
         ))}
         {inquiries.length === 0 ? (
-          <p className="border border-ink/10 bg-paper p-8 text-ink-soft">No enquiries yet.</p>
+          <p className="border border-ink/10 bg-paper p-8 text-ink-soft">
+            {q?.trim()
+              ? `No enquiries match “${q.trim()}”.`
+              : "No enquiries yet."}
+          </p>
         ) : null}
       </div>
     </div>
