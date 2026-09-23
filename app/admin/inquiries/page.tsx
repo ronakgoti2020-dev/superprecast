@@ -2,22 +2,9 @@ import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 import { InquiryStatus } from "@/components/admin/InquiryStatus";
 import { InquirySearch } from "@/components/admin/InquirySearch";
-import { Prisma } from "@prisma/client";
+import { inquirySearchWhere } from "@/lib/inquiry-search";
 
 export const dynamic = "force-dynamic";
-
-function inquirySearchWhere(q?: string): Prisma.InquiryWhereInput | undefined {
-  const query = q?.trim();
-  if (!query) return undefined;
-  const digits = query.replace(/\D/g, "");
-  return {
-    OR: [
-      { name: { contains: query } },
-      { phone: { contains: query } },
-      ...(digits && digits !== query ? [{ phone: { contains: digits } }] : []),
-    ],
-  };
-}
 
 export default async function AdminInquiriesPage({
   searchParams,

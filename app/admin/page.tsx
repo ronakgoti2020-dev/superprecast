@@ -1,14 +1,28 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { InquirySearch } from "@/components/admin/InquirySearch";
+import { inquirySearchWhere } from "@/lib/inquiry-search";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminDashboardPage() {
-  const [products, inquiries, unread, categories] = await Promise.all([
+export default async function AdminDashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const { q } = await searchParams;
+  const where = inquirySearchWhere(q);
+  const [products, inquiries, unread, categories, latest] = await Promise.all([
     prisma.product.count(),
     prisma.inquiry.count(),
     prisma.inquiry.count({ where: { status: "new" } }),
     prisma.category.count(),
+    prisma.inquiry.findMany({
+      where,
+      ...(where ? {} : { take: 5 }),
+      orderBy: { createdAt: "desc" },
+      include: { product: true },
+    }),
   ]);
   let projects = 0;
   try {
@@ -16,11 +30,6 @@ export default async function AdminDashboardPage() {
   } catch {
     projects = 0;
   }
-  const latest = await prisma.inquiry.findMany({
-    take: 5,
-    orderBy: { createdAt: "desc" },
-    include: { product: true },
-  });
 
   return (
     <div>
@@ -46,18 +55,13 @@ export default async function AdminDashboardPage() {
             View all
           </Link>
         </div>
-        <form action="/admin/inquiries" className="mt-4 flex max-w-md gap-2">
-          <input
-            type="search"
-            name="q"
-            placeholder="Search by name or mobile number"
-            className="min-w-0 flex-1 border border-ink/15 bg-sand px-4 py-3"
-            aria-label="Search enquiries by name or mobile number"
+        <div className="mt-4">
+          <InquirySearch
+            initialQ={q ?? ""}
+            action="/admin"
+            className="w-full max-w-md border border-ink/15 bg-sand px-4 py-3"
           />
-          <button type="submit" className="bg-ink px-4 py-3 text-sm text-cream">
-            Search
-          </button>
-        </form>
+        </div>
         <div className="mt-4 divide-y divide-ink/10">
           {latest.map((item) => (
             <div key={item.id} className="flex items-center justify-between py-3 text-sm">
@@ -70,7 +74,11 @@ export default async function AdminDashboardPage() {
               <span className="uppercase tracking-wide text-xs text-terracotta">{item.status}</span>
             </div>
           ))}
-          {latest.length === 0 ? <p className="py-6 text-ink-soft">No enquiries yet.</p> : null}
+          {latest.length === 0 ? (
+            <p className="py-6 text-ink-soft">
+              {q?.trim() ? `No enquiries match “${q.trim()}”.` : "No enquiries yet."}
+            </p>
+          ) : null}
         </div>
       </div>
     </div>
