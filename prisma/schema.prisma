@@ -73,6 +73,7 @@ model Setting {
   owner     String @default("Minaben Pravinbhai Luvani")
   instagram String @default("")
   mapUrl    String @default("")
+  logo      String @default("")
 }
 
 model Admin {

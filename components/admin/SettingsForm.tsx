@@ -12,19 +12,19 @@ type Settings = {
   owner: string;
   instagram: string;
   mapUrl: string;
+  logo: string;
 };
 
 export function SettingsForm({ settings }: { settings: Settings }) {
   const router = useRouter();
   const [status, setStatus] = useState("");
+  const [preview, setPreview] = useState(settings.logo || "/logo.png");
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const data = Object.fromEntries(new FormData(event.currentTarget).entries());
     const response = await fetch("/api/admin/settings", {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: new FormData(event.currentTarget),
     });
     setStatus(response.ok ? "Saved." : "Could not save settings.");
     if (response.ok) router.refresh();
@@ -32,6 +32,24 @@ export function SettingsForm({ settings }: { settings: Settings }) {
 
   return (
     <form onSubmit={onSubmit} className="max-w-xl space-y-4">
+      <label className="block">
+        <span className="mb-2 block text-sm text-ink-soft">Logo</span>
+        <img src={preview} alt="Current logo" className="mb-3 h-16 w-16 object-contain" />
+        <input type="hidden" name="logoUrl" value={settings.logo} />
+        <input
+          name="logo"
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif"
+          className="admin-input"
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            if (file) setPreview(URL.createObjectURL(file));
+          }}
+        />
+        <span className="mt-2 block text-xs text-ink-soft">
+          PNG or JPG works best. Leave empty to keep the current logo.
+        </span>
+      </label>
       <label className="block">
         <span className="mb-2 block text-sm text-ink-soft">Phone</span>
         <input name="phone" defaultValue={settings.phone} className="admin-input" />
@@ -75,7 +93,7 @@ export function SettingsForm({ settings }: { settings: Settings }) {
         <input
           name="mapUrl"
           defaultValue={settings.mapUrl}
-          placeholder="Paste the Google Maps share link"
+          placeholder="Paste the Google Maps share or embed link"
           className="admin-input"
         />
       </label>

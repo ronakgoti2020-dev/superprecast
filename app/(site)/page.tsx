@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductPhoto } from "@/components/ProductPhoto";
 import { QuoteForm } from "@/components/QuoteForm";
+import { getSettings, logoSrc } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,7 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const [categories, featured, productCount, delivered] = await Promise.all([
+  const [categories, featured, productCount, delivered, settings] = await Promise.all([
     prisma.category.findMany({
       include: { _count: { select: { products: true } } },
       orderBy: { name: "asc" },
@@ -38,7 +39,10 @@ export default async function HomePage() {
       take: 3,
       orderBy: { createdAt: "desc" },
     }),
+    getSettings(),
   ]);
+  const logo = logoSrc(settings.logo);
+  const logoUrl = logo.startsWith("http") ? logo : `https://superprecastindia.com${logo}`;
 
   return (
     <main>
@@ -50,7 +54,7 @@ export default async function HomePage() {
             "@type": "Organization",
             name: "Super Precast India",
             url: "https://superprecastindia.com/",
-            logo: "https://superprecastindia.com/logo.png",
+            logo: logoUrl,
             address: {
               "@type": "PostalAddress",
               addressLocality: "Ankleshwar",

@@ -488,6 +488,7 @@ async function main() {
       owner: "Minaben Pravinbhai Luvani",
       instagram: "",
       mapUrl: "",
+      logo: "",
     },
   });
 

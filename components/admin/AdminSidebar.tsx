@@ -14,7 +14,7 @@ const links = [
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
-export function AdminSidebar() {
+export function AdminSidebar({ logo = "/logo.png" }: { logo?: string }) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -28,7 +28,7 @@ export function AdminSidebar() {
     <aside className="flex w-full flex-col bg-ink text-cream md:min-h-screen md:w-64">
       <div className="border-b border-white/10 px-6 py-6">
         <div className="flex items-center gap-3">
-          <BrandLogo size={40} />
+          <BrandLogo size={40} src={logo} />
           <div>
             <p className="font-display text-2xl leading-none">Super Precast</p>
             <p className="mt-1 text-xs uppercase tracking-[0.2em] text-gold">Admin</p>
