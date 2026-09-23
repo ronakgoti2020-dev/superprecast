@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { getSettings } from "@/lib/settings";
+import { getSettings, instagramHref, mapsHref } from "@/lib/settings";
 import { BrandLogo } from "@/components/BrandLogo";
 
 export async function Footer() {
   const settings = await getSettings();
+  const instagram = instagramHref(settings.instagram);
+  const map = mapsHref(settings.mapUrl);
 
   return (
     <footer className="mt-20 border-t border-ink/10 bg-ink text-cream">
@@ -33,11 +35,33 @@ export async function Footer() {
         <div>
           <p className="text-xs uppercase tracking-[0.2em] text-gold">Reach Us</p>
           <div className="mt-4 space-y-2 text-sm text-stone">
-            <p>{settings.address}</p>
+            {map ? (
+              <p>
+                <a href={map} target="_blank" rel="noreferrer">
+                  {settings.address}
+                </a>
+              </p>
+            ) : (
+              <p>{settings.address}</p>
+            )}
             <p>GST: {settings.gst}</p>
             <p>Owner: {settings.owner}</p>
             {settings.phone ? <p>{settings.phone}</p> : null}
             {settings.email ? <p>{settings.email}</p> : null}
+            {instagram ? (
+              <p>
+                <a href={instagram} target="_blank" rel="noreferrer">
+                  Instagram
+                </a>
+              </p>
+            ) : null}
+            {map ? (
+              <p>
+                <a href={map} target="_blank" rel="noreferrer">
+                  Google Maps
+                </a>
+              </p>
+            ) : null}
           </div>
         </div>
       </div>

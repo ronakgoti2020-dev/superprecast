@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { QuoteForm } from "@/components/QuoteForm";
-import { getSettings } from "@/lib/settings";
+import { getSettings, instagramHref, mapsHref } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -8,6 +8,8 @@ export const metadata: Metadata = {
 
 export default async function ContactPage() {
   const settings = await getSettings();
+  const instagram = instagramHref(settings.instagram);
+  const map = mapsHref(settings.mapUrl);
 
   return (
     <main className="mx-auto grid max-w-6xl gap-12 px-5 py-16 md:grid-cols-2">
@@ -21,7 +23,13 @@ export default async function ContactPage() {
         <div className="mt-10 space-y-4 text-sm">
           <p>
             <span className="block text-ink-soft">Address</span>
-            {settings.address}
+            {map ? (
+              <a href={map} target="_blank" rel="noreferrer" className="underline-offset-4 hover:underline">
+                {settings.address}
+              </a>
+            ) : (
+              settings.address
+            )}
           </p>
           <p>
             <span className="block text-ink-soft">GST</span>
@@ -41,6 +49,22 @@ export default async function ContactPage() {
             <p>
               <span className="block text-ink-soft">Email</span>
               {settings.email}
+            </p>
+          ) : null}
+          {instagram ? (
+            <p>
+              <span className="block text-ink-soft">Instagram</span>
+              <a href={instagram} target="_blank" rel="noreferrer">
+                {settings.instagram}
+              </a>
+            </p>
+          ) : null}
+          {map ? (
+            <p>
+              <span className="block text-ink-soft">Google Maps</span>
+              <a href={map} target="_blank" rel="noreferrer">
+                View location
+              </a>
             </p>
           ) : null}
         </div>

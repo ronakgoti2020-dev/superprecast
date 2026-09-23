@@ -10,6 +10,8 @@ type Settings = {
   address: string;
   gst: string;
   owner: string;
+  instagram: string;
+  mapUrl: string;
 };
 
 export function SettingsForm({ settings }: { settings: Settings }) {
@@ -58,6 +60,24 @@ export function SettingsForm({ settings }: { settings: Settings }) {
       <label className="block">
         <span className="mb-2 block text-sm text-ink-soft">Owner / contact person</span>
         <input name="owner" defaultValue={settings.owner} className="admin-input" />
+      </label>
+      <label className="block">
+        <span className="mb-2 block text-sm text-ink-soft">Instagram</span>
+        <input
+          name="instagram"
+          defaultValue={settings.instagram}
+          placeholder="https://instagram.com/yourpage or @yourpage"
+          className="admin-input"
+        />
+      </label>
+      <label className="block">
+        <span className="mb-2 block text-sm text-ink-soft">Google Maps location</span>
+        <input
+          name="mapUrl"
+          defaultValue={settings.mapUrl}
+          placeholder="Paste the Google Maps share link"
+          className="admin-input"
+        />
       </label>
       <button className="bg-terracotta px-6 py-3 text-sm text-cream">Save settings</button>
       {status ? <p className="text-sm text-ink-soft">{status}</p> : null}

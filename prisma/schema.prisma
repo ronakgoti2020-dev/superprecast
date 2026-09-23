@@ -64,13 +64,15 @@ model Inquiry {
 }
 
 model Setting {
-  id       String @id @default("site")
-  phone    String @default("")
-  email    String @default("")
-  whatsapp String @default("")
-  address  String @default("Ankleshwar, Bharuch, Gujarat 393002")
-  gst      String @default("24AOXPL2270G1ZQ")
-  owner    String @default("Minaben Pravinbhai Luvani")
+  id        String @id @default("site")
+  phone     String @default("")
+  email     String @default("")
+  whatsapp  String @default("")
+  address   String @default("Ankleshwar, Bharuch, Gujarat 393002")
+  gst       String @default("24AOXPL2270G1ZQ")
+  owner     String @default("Minaben Pravinbhai Luvani")
+  instagram String @default("")
+  mapUrl    String @default("")
 }
 
 model Admin {

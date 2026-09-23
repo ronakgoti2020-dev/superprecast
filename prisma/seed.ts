@@ -486,6 +486,8 @@ async function main() {
       address: "Ankleshwar, Bharuch, Gujarat 393002",
       gst: "24AOXPL2270G1ZQ",
       owner: "Minaben Pravinbhai Luvani",
+      instagram: "",
+      mapUrl: "",
     },
   });
 

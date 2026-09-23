@@ -7,3 +7,17 @@ export async function getSettings() {
     data: { id: "site" },
   });
 }
+
+export function instagramHref(value?: string | null) {
+  const raw = value?.trim() || "";
+  if (!raw) return "";
+  if (/^https?:\/\//i.test(raw)) return raw;
+  return `https://instagram.com/${raw.replace(/^@/, "")}`;
+}
+
+export function mapsHref(value?: string | null) {
+  const raw = value?.trim() || "";
+  if (!raw) return "";
+  if (/^https?:\/\//i.test(raw)) return raw;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(raw)}`;
+}

@@ -16,6 +16,8 @@ export async function PUT(request: Request) {
       address: String(body.address || ""),
       gst: String(body.gst || ""),
       owner: String(body.owner || ""),
+      instagram: String(body.instagram || ""),
+      mapUrl: String(body.mapUrl || ""),
     },
     create: {
       id: "site",
@@ -25,6 +27,8 @@ export async function PUT(request: Request) {
       address: String(body.address || ""),
       gst: String(body.gst || ""),
       owner: String(body.owner || ""),
+      instagram: String(body.instagram || ""),
+      mapUrl: String(body.mapUrl || ""),
     },
   });
   return NextResponse.json(settings);
