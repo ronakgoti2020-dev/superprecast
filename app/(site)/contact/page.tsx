@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { QuoteForm } from "@/components/QuoteForm";
-import { getSettings, instagramHref, mapsHref } from "@/lib/settings";
+import { getSettings, instagramHref, mapsEmbedSrc, mapsHref } from "@/lib/settings";
+import { LocationMap } from "@/components/LocationMap";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -10,9 +11,11 @@ export default async function ContactPage() {
   const settings = await getSettings();
   const instagram = instagramHref(settings.instagram);
   const map = mapsHref(settings.mapUrl);
+  const embed = mapsEmbedSrc(settings.mapUrl, settings.address);
 
   return (
-    <main className="mx-auto grid max-w-6xl gap-12 px-5 py-16 md:grid-cols-2">
+    <main className="mx-auto max-w-6xl px-5 py-16">
+    <div className="grid gap-12 md:grid-cols-2">
       <div>
         <p className="text-xs uppercase tracking-[0.28em] text-terracotta">Contact</p>
         <h1 className="mt-3 font-display text-5xl">Tell us what you need on site.</h1>
@@ -59,19 +62,25 @@ export default async function ContactPage() {
               </a>
             </p>
           ) : null}
-          {map ? (
-            <p>
-              <span className="block text-ink-soft">Google Maps</span>
-              <a href={map} target="_blank" rel="noreferrer">
-                View location
-              </a>
-            </p>
-          ) : null}
         </div>
       </div>
       <div className="border border-ink/10 bg-paper p-8">
         <QuoteForm />
       </div>
+    </div>
+    {embed ? (
+      <div className="mt-12">
+        <p className="mb-4 text-xs uppercase tracking-[0.28em] text-terracotta">Location</p>
+        <LocationMap src={embed} className="h-80 w-full md:h-96" />
+        {map ? (
+          <p className="mt-3 text-sm">
+            <a href={map} target="_blank" rel="noreferrer">
+              Open in Google Maps
+            </a>
+          </p>
+        ) : null}
+      </div>
+    ) : null}
     </main>
   );
 }
