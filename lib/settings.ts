@@ -1,11 +1,51 @@
 import { prisma } from "./prisma";
 
-export async function getSettings() {
+export type SiteSettings = {
+  id: string;
+  phone: string;
+  email: string;
+  whatsapp: string;
+  address: string;
+  gst: string;
+  owner: string;
+  instagram: string;
+  mapUrl: string;
+  logo: string;
+};
+
+function readSettings(row: object): SiteSettings {
+  const value = row as Record<string, unknown>;
+  return {
+    id: String(value.id ?? "site"),
+    phone: String(value.phone ?? ""),
+    email: String(value.email ?? ""),
+    whatsapp: String(value.whatsapp ?? ""),
+    address: String(value.address ?? ""),
+    gst: String(value.gst ?? ""),
+    owner: String(value.owner ?? ""),
+    instagram: String(value.instagram ?? ""),
+    mapUrl: String(value.mapUrl ?? ""),
+    logo: String(value.logo ?? ""),
+  };
+}
+
+export async function getSettings(): Promise<SiteSettings> {
+  try {
+    const rows = await prisma.$queryRawUnsafe<Record<string, unknown>[]>(
+      "SELECT * FROM Setting WHERE id = ?",
+      "site",
+    );
+    if (rows[0]) return readSettings(rows[0]);
+  } catch {
+    // Fall back to Prisma types if the raw table read fails.
+  }
   const existing = await prisma.setting.findUnique({ where: { id: "site" } });
-  if (existing) return existing;
-  return prisma.setting.create({
-    data: { id: "site" },
-  });
+  if (existing) return readSettings(existing);
+  return readSettings(
+    await prisma.setting.create({
+      data: { id: "site" },
+    }),
+  );
 }
 
 export function instagramHref(value?: string | null) {

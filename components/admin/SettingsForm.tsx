@@ -34,6 +34,7 @@ export function SettingsForm({ settings }: { settings: Settings }) {
     <form onSubmit={onSubmit} className="max-w-xl space-y-4">
       <label className="block">
         <span className="mb-2 block text-sm text-ink-soft">Logo</span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={preview} alt="Current logo" className="mb-3 h-16 w-16 object-contain" />
         <input type="hidden" name="logoUrl" value={settings.logo} />
         <input

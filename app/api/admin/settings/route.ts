@@ -29,15 +29,21 @@ export async function PUT(request: Request) {
     owner: value("owner"),
     instagram: value("instagram"),
     mapUrl: value("mapUrl"),
-    logo,
   };
 
-  const settings = await prisma.setting.upsert({
+  await prisma.setting.upsert({
     where: { id: "site" },
     update: data,
     create: { id: "site", ...data },
   });
-  return NextResponse.json(settings);
+
+  try {
+    await prisma.$executeRawUnsafe("UPDATE Setting SET logo = ? WHERE id = ?", logo, "site");
+  } catch {
+    // logo column is added with prisma db push
+  }
+
+  return NextResponse.json(await getSettings());
 }
 
 export async function GET() {
