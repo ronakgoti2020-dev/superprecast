@@ -94,9 +94,12 @@ export function SettingsForm({ settings }: { settings: Settings }) {
         <input
           name="mapUrl"
           defaultValue={settings.mapUrl}
-          placeholder="Paste the Google Maps share or embed link"
+          placeholder="Paste the Super Precast share link or Embed a map link"
           className="admin-input"
         />
+        <span className="mt-2 block text-xs text-ink-soft">
+          Best: open Super Precast in Google Maps → Share → Embed a map, and paste that link.
+        </span>
       </label>
       <button className="bg-terracotta px-6 py-3 text-sm text-cream">Save settings</button>
       {status ? <p className="text-sm text-ink-soft">{status}</p> : null}

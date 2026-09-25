@@ -67,23 +67,38 @@ export function mapsHref(value?: string | null) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(raw)}`;
 }
 
-function coordsEmbed(lat: string, lng: string) {
-  return `https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=17&output=embed`;
+function extractMapsUrl(value: string) {
+  const iframe = value.match(/src=["']([^"']+)["']/i);
+  if (iframe?.[1]) return iframe[1];
+  return value.trim();
+}
+
+function placeEmbed(cid: string, name: string, lat: string, lng: string) {
+  const encodedCid = encodeURIComponent(cid);
+  const encodedName = encodeURIComponent(name);
+  return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3700!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s${encodedCid}!2s${encodedName}!5e0!3m2!1sen!2sin`;
 }
 
 function embedFromMapsUrl(url: string) {
-  const raw = url.trim();
+  const raw = extractMapsUrl(url);
   if (!raw) return "";
 
   if (raw.includes("/maps/embed")) {
     return raw.match(/https?:\/\/[^\s"'<>]+/)?.[0] || raw;
   }
 
+  const nameMatch = raw.match(/\/maps\/place\/([^/@?]+)/);
+  const name = nameMatch
+    ? decodeURIComponent(nameMatch[1].replace(/\+/g, " "))
+    : "";
+  const cid = raw.match(/1s(0x[0-9a-fA-F]+:0x[0-9a-fA-F]+)/i)?.[1] || "";
   const pin = raw.match(/!3d(-?\d+(?:\.\d+)?)!4d(-?\d+(?:\.\d+)?)/);
   const at = raw.match(/@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/);
-  const lat = pin?.[1] || at?.[1];
-  const lng = pin?.[2] || at?.[2];
-  if (lat && lng) return coordsEmbed(lat, lng);
+  const lat = pin?.[1] || at?.[1] || "";
+  const lng = pin?.[2] || at?.[2] || "";
+
+  if (cid && name && lat && lng) return placeEmbed(cid, name, lat, lng);
+  if (cid && lat && lng) return placeEmbed(cid, name || "Super Precast", lat, lng);
   return "";
 }
 
