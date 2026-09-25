@@ -11,8 +11,8 @@ export function LocationMap({
       title="Super Precast location on Google Maps"
       src={src}
       className={`border-0 ${className}`}
-      loading="lazy"
-      referrerPolicy="no-referrer-when-downgrade"
+      loading="eager"
+      referrerPolicy="origin"
       allowFullScreen
     />
   );

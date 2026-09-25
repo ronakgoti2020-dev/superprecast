@@ -67,6 +67,10 @@ export function mapsHref(value?: string | null) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(raw)}`;
 }
 
+function coordsEmbed(lat: string, lng: string) {
+  return `https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=17&output=embed`;
+}
+
 function embedFromMapsUrl(url: string) {
   const raw = url.trim();
   if (!raw) return "";
@@ -75,33 +79,37 @@ function embedFromMapsUrl(url: string) {
     return raw.match(/https?:\/\/[^\s"'<>]+/)?.[0] || raw;
   }
 
-  const nameMatch = raw.match(/\/maps\/place\/([^/@]+)/);
-  const name = nameMatch
-    ? decodeURIComponent(nameMatch[1].replace(/\+/g, " "))
-    : "";
-  const at = raw.match(/@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/);
   const pin = raw.match(/!3d(-?\d+(?:\.\d+)?)!4d(-?\d+(?:\.\d+)?)/);
+  const at = raw.match(/@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/);
   const lat = pin?.[1] || at?.[1];
   const lng = pin?.[2] || at?.[2];
-
-  if (name && lat && lng) {
-    return `https://maps.google.com/maps?q=${encodeURIComponent(name)}&ll=${lat},${lng}&z=17&output=embed`;
-  }
-  if (lat && lng) {
-    return `https://maps.google.com/maps?q=${lat},${lng}&z=17&output=embed`;
-  }
-  if (name) {
-    return `https://maps.google.com/maps?q=${encodeURIComponent(name)}&z=17&output=embed`;
-  }
+  if (lat && lng) return coordsEmbed(lat, lng);
   return "";
 }
 
 async function resolveShortMapsUrl(url: string) {
-  const response = await fetch(url, {
-    redirect: "follow",
-    headers: { "User-Agent": "Mozilla/5.0 Super Precast" },
-  });
-  return response.url || url;
+  let current = url;
+  for (let i = 0; i < 8; i += 1) {
+    const response = await fetch(current, {
+      method: "GET",
+      redirect: "manual",
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
+      },
+    });
+    const location = response.headers.get("location");
+    if (location) {
+      current = new URL(location, current).toString();
+      if (embedFromMapsUrl(current)) return current;
+      continue;
+    }
+    const html = await response.text();
+    const match = html.match(/https:\/\/www\.google\.com\/maps\/place\/[^\s"'<>]+/);
+    if (match?.[0]) return match[0].replace(/&amp;/g, "&");
+    return response.url || current;
+  }
+  return current;
 }
 
 const embedCache = new Map<string, string>();
@@ -120,16 +128,10 @@ export async function resolveMapsEmbedSrc(mapUrl?: string | null) {
       embed = "";
     }
   }
-  if (!embed) {
-    embed = `https://maps.google.com/maps?q=${encodeURIComponent(raw)}&z=17&output=embed`;
-  }
-  embedCache.set(raw, embed);
+  if (embed) embedCache.set(raw, embed);
   return embed;
 }
 
 export function mapsEmbedSrc(mapUrl?: string | null) {
-  return embedFromMapsUrl(mapUrl || "") ||
-    (mapUrl?.trim()
-      ? `https://maps.google.com/maps?q=${encodeURIComponent(mapUrl.trim())}&z=17&output=embed`
-      : "");
+  return embedFromMapsUrl(mapUrl || "");
 }

@@ -68,9 +68,9 @@ export async function Footer() {
           </div>
         </div>
       </div>
-      {embed ? (
+      {embed || map ? (
         <div className="mx-auto max-w-6xl px-5 pb-14">
-          <LocationMap src={embed} />
+          {embed ? <LocationMap src={embed} /> : null}
           {map ? (
             <p className="mt-3 text-sm text-stone">
               <a href={map} target="_blank" rel="noreferrer">
